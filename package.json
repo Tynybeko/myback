@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "start": "node /index.js",
-    "dev": "nodemon node /index.js"
+    "dev": "nodemon node /index.js",
     "test": "node index.js"
   },
   "author": "",
