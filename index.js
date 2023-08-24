@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cors());
 (async function () {
     try {
-        await mongoose.connect('mongodb+srv://Tynybek:Zhanybekov@test.gluw22q.mongodb.net/?retryWrites=true&w=majority')
+        await mongoose.connect('mongodb+srv://Tynybek:Zhanybekov@test.gluw22q.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
             .then(() => console.log("MONGO DB OK"))
             .catch((err) => console.log(err, "ERROR MONGO"))
         app.listen(PORT, () => {
