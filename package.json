@@ -6,12 +6,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-<<<<<<< HEAD
     "start": "node /index.js",
     "dev": "nodemon node /index.js"
-=======
     "test": "node index.js"
->>>>>>> 49bc2570ac91c28ccf1acc9b251fb3724b5370f4
   },
   "author": "",
   "license": "ISC",
