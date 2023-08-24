@@ -1,11 +1,13 @@
 import express from "express";
 import mongoose from "mongoose";
+import multer from 'multer'
 import cors from 'cors'
 import * as Validations from './utils/validations.js'
 import { checkAuth, handleValidationErrors } from './utils/utils.js'
 import { Users, Posts, Likes, Comment } from "./controllers/controllers.js";
 
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const PORT = 5555;
 const app = express();
@@ -28,7 +30,7 @@ app.use(cors());
 // Posts API
 
 
-app.get('/posts', Posts.getAll)
+app.get('/posts', upload.array('images'), Posts.getAll)
 app.get('/posts/:id', checkAuth, Posts.getOne)
 app.post('/posts/create', checkAuth, Posts.createPost)
 app.delete('/posts/remove/:id', checkAuth, Posts.remove)
