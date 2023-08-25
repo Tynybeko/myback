@@ -4,10 +4,9 @@ import multer from 'multer'
 import cors from 'cors'
 import * as Validations from './utils/validations.js'
 import { checkAuth, handleValidationErrors } from './utils/utils.js'
-import { Users, Posts, Likes, Comment } from "./controllers/controllers.js";
+import { Users, Posts, Likes, Comment, Uploads } from "./controllers/controllers.js";
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+
 
 const PORT = 5555;
 const app = express();
@@ -27,15 +26,36 @@ app.use(cors());
 }())
 
 
+
+
 // Posts API
 
 
-app.get('/posts', upload.array('images'), Posts.getAll)
+app.get('/posts', Posts.getAll)
 app.get('/posts/:id', checkAuth, Posts.getOne)
 app.post('/posts/create', checkAuth, Posts.createPost)
 app.delete('/posts/remove/:id', checkAuth, Posts.remove)
 app.patch('/posts/update/:id', checkAuth, Posts.update)
 
+// Images UPLOAD API
+app.use('/uploads', express.static('uploads'));
+const storage = multer.diskStorage(
+    {
+        destination: (_, __, cb) => {
+            cb(null, 'uploads')
+        },
+        filename: (_, file, cb) => {
+            cb(null, file.originalname)
+        },
+
+    }
+)
+
+const upload = multer({ storage })
+
+
+app.post('/upload/avatar', checkAuth, upload.single('image'), Uploads.uploadAvatar)
+app.delete('/remove/avatar', checkAuth, Uploads.removeAvatar)
 
 // User API
 

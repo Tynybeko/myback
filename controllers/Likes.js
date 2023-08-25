@@ -7,7 +7,6 @@ import UserSchema from '../models/User.js'
 export const addLike = async (req, res) => {
     try {
         const post = await postSchema.findById(req.params.postId);
-        console.log(req.params.postId);
         if (!post) {
             return res.status(400).json({message: 'Пост не найден или не доступен!'})
         }

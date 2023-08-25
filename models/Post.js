@@ -13,7 +13,13 @@ const PostSchema = new mongoose.Schema({
     },
     images: [
         {
-            type: Buffer,
+            url: {
+                type: String,
+            },
+            imgId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Image"
+            }
         }
     ],
     categoryId: {

@@ -30,12 +30,21 @@ const UserSchema = new mongoose.Schema({
         unique: true,
     },
     avatar: {
-        type: Buffer
+        imgId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Image'
+        },
+        url: String
     },
     images: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Image'
+            url: {
+                type: String,
+            },
+            imgId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Image'
+            }
         }
     ],
     private: {

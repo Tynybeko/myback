@@ -114,18 +114,11 @@ export const createPost = async (req, res) => {
 
         const catId = await CatSchema.findById(req.body.categoryId)
         if (!catId) {
-            return res.status(400).json({ message: 'Неправильно указан катаегория!'})
+            return res.status(400).json({ message: 'Неправильно указан катаегория!' })
         }
-        const images = req.body.files.map(file => {
-            return {
-                data: file.buffer,
-                contentType: file.mimetype
-            };
-        });
         const doc = new PostSchema({
             title: req.body.title,
             desc: req.body.desc,
-            images: images,
             categoryId: catId._id,
             user: req.userId,
         })

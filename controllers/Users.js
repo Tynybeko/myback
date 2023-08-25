@@ -40,14 +40,12 @@ export const register = async (req, res) => {
 export const userUpdate = async (req, res) => {
     try {
         const userId = req.params.id;
-
         UserModel.findOneAndReplace(
             {
                 _id: userId,
             },
             {
                 ...req.body,
-                avatar: req.body.file.buffer
             }
         ).then((doc) => {
             if (!doc) {
