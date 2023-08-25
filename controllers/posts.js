@@ -116,7 +116,7 @@ export const createPost = async (req, res) => {
         if (!catId) {
             return res.status(400).json({ message: 'Неправильно указан катаегория!'})
         }
-        const images = req.body.files.map(file => {
+        const images = req.body.images.map(file => {
             return {
                 data: file.buffer,
                 contentType: file.mimetype
