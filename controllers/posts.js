@@ -145,7 +145,7 @@ export const createPost = async (req, res) => {
 export const getAll = async (req, res) => {
     try {
         let queryObj = {}
-        let query = req._parsedUrl.query.split(/[=&]/)
+        let query =req._parsedUrl.query?.split(/[=&]/) ?? ""
         for (let i = 0; i + 1 < query.length; i += 2) {
             queryObj[query[i]] = query[i + 1]
         }
