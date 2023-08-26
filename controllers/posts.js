@@ -116,15 +116,12 @@ export const createPost = async (req, res) => {
         if (!catId) {
             return res.status(400).json({ message: 'Неправильно указан катаегория!' })
         }
-<<<<<<< HEAD
-=======
         const images = req.body.images.map(file => {
             return {
                 data: file.buffer,
                 contentType: file.mimetype
             };
         });
->>>>>>> ccfd3ac0556dbcd18fdce789648c2fb710c71d99
         const doc = new PostSchema({
             title: req.body.title,
             desc: req.body.desc,
