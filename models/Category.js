@@ -4,7 +4,14 @@ const CatSchema = new mongoose.Schema({
         require: true,
         unique: true,
         type: String,
+    },
+    postsCount: {
+        type: Number,
+        default: 0
     }
+
+}, {
+    timestamps: true
 })
 
 export default mongoose.model('Category', CatSchema)

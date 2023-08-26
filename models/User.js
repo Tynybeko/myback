@@ -34,7 +34,9 @@ const UserSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Image'
         },
-        url: String
+        url: {
+            type: String
+        }
     },
     images: [
         {
@@ -53,8 +55,15 @@ const UserSchema = new mongoose.Schema({
     },
     likePost: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Like'
+            likeId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Like'
+            },
+            postId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Post'
+            },
+            postTitle: String
         }
     ],
     favoritePost: [

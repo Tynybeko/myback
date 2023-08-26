@@ -116,21 +116,15 @@ export const createPost = async (req, res) => {
         if (!catId) {
             return res.status(400).json({ message: 'Неправильно указан катаегория!' })
         }
-<<<<<<< HEAD
-=======
-        const images = req.body.images.map(file => {
-            return {
-                data: file.buffer,
-                contentType: file.mimetype
-            };
-        });
->>>>>>> 93744971cd49499f8c72ae52b3136547ba62402a
         const doc = new PostSchema({
             title: req.body.title,
             desc: req.body.desc,
             categoryId: catId._id,
+            categoryTitle: catId.title,
             user: req.userId,
         })
+        catId.postsCount += 1
+        await catId.save()
         const post = await doc.save();
         res.status(200).json(post)
     } catch (err) {
@@ -144,7 +138,12 @@ export const createPost = async (req, res) => {
 
 export const getAll = async (req, res) => {
     try {
-        const posts = await PostSchema.find()
+        let queryObj = {}
+        let query = req._parsedUrl.query.split(/[=&]/)
+        for (let i = 0; i + 1 < query.length; i += 2) {
+            queryObj[query[i]] = query[i + 1]
+        }
+        const posts = await PostSchema.find(queryObj)
         res.json(posts)
     } catch (err) {
         console.log(err)
@@ -185,21 +184,18 @@ export const getOne = async (req, res) => {
 
 export const remove = async (req, res) => {
     try {
-        const foodId = req.params.id;
-        FoodSchema.findOneAndDelete(
-            {
-                _id: foodId,
-            },
-        ).then((doc) => {
-            if (!doc) {
-                return res.status(404).json({
-                    message: 'Не найдено!'
-                })
-            }
-            res.json({
-                message: 'Пост удален!'
+        const postId = req.params.id;
+        let post = await PostSchema.findByIdAndDelete(postId)
+            .then(async (doc) => {
+                if (!doc) {
+                    res.status(400).json({ error: 'Не удалось удалить пост' })
+                } else {
+                    let category = await CatSchema.findById(doc.categoryId)
+                    category.postsCount -= 1
+                    await category.save()
+                    res.status(200).json({ message: 'Пост удален' })
+                }
             })
-        },)
     } catch (err) {
         console.log(err)
         res.status(500).json({

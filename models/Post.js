@@ -25,7 +25,9 @@ const PostSchema = new mongoose.Schema({
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
-        required: true
+    },
+    categoryTitle: {
+        type: String,
     },
     viewCount: {
         type: Number,
@@ -33,9 +35,20 @@ const PostSchema = new mongoose.Schema({
     },
     likes: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Like"
-        }
+            likeId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Like"
+            },
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+            userName: {
+                type: String,
+            }
+
+        },
+
     ],
     user: {
         type: mongoose.Schema.Types.ObjectId,

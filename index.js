@@ -45,7 +45,7 @@ const storage = multer.diskStorage(
             cb(null, 'uploads')
         },
         filename: (_, file, cb) => {
-            cb(null, file.originalname)
+            cb(null, Math.random() + file.originalname)
         },
 
     }
@@ -55,7 +55,11 @@ const upload = multer({ storage })
 
 
 app.post('/upload/avatar', checkAuth, upload.single('image'), Uploads.uploadAvatar)
+app.post('/upload/user/images', checkAuth, upload.array('images', 3), Uploads.uploadImagesForUser)
 app.delete('/remove/avatar', checkAuth, Uploads.removeAvatar)
+app.delete('/remove/user/image', checkAuth, Uploads.removeImageForUser)
+app.post('/upload/post/images/:postId', checkAuth, upload.array('images', 3), Uploads.uploadImagesForPost)
+app.delete('/remove/post/image/:postId', checkAuth, Uploads.removeImageForPost)
 
 // User API
 

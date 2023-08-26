@@ -19,24 +19,26 @@ export const addComment = async (req, res) => {
 
 export const removeComment = async (req, res) => {
     try {
-        const comment = await commentSchema.findById(req.params.commentId);
-        if (!comment) {
-            return res.status(404).json({ message: 'Комментарий не найден' });
-        }
+        const comment = await commentSchema.findByIdAndDelete(req.params.commentId)
+            .then(async (doc) => {
+                if (doc) {
+                    const post = await PostSchema.findById(doc.postId);
+                    if (!post) {
+                        return res.status(404).json({ message: 'Пост не найден' });
+                    }
+                    const index = post.comments.indexOf(doc._id);
+                    post.comments.splice(index, 1);
+                    await post.save();
+                    res.json({ message: 'Комментарий удален' });
+                } else {
+                    res.status(400).json({ error: "Произошла ошибка" })
+                }
+            })
 
-        const post = await PostSchema.findById(comment.postId);
-        if (!post) {
-            return res.status(404).json({ message: 'Пост не найден' });
-        }
 
-        await comment.remove();
 
-        const index = post.comments.indexOf(comment._id);
-        post.comments.splice(index, 1);
-        await post.save();
-
-        res.json({ message: 'Комментарий удален' });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Ошибка при удалении комментария' });
     }
 };

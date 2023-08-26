@@ -8,14 +8,17 @@ export const addLike = async (req, res) => {
     try {
         const post = await postSchema.findById(req.params.postId);
         if (!post) {
-            return res.status(400).json({message: 'Пост не найден или не доступен!'})
+            return res.status(400).json({ error: 'Пост не найден или не доступен!' })
         }
         const user = await UserSchema.findById(req.userId)
-        const newLike = new likeSchema({ postId: post._id, userId: req.userId });
+        if (post.likes.some(item => item.userId == req.userId)) {
+            res.status(400).json({ error: 'Лайк уже поставлен!' })
+            return
+        }
+        const newLike = new likeSchema({ postId: post._id, userId: req.userId })
+        user.likePost.push({ likeId: newLike._id, postId: post._id, postTitle: post.name })
+        post.likes.push({ likeId: newLike._id, userId: user._id, userName: user.name });
         await newLike.save();
-
-        user.likePost.push(newLike._id)
-        post.likes.push(newLike._id);
         await post.save();
         await user.save();
 
@@ -32,20 +35,29 @@ export const removeLike = async (req, res) => {
         const like = await likeSchema.findOne({ postId: post._id });
 
         if (!like) {
-            return res.status(404).json({ message: 'Лайк не найден' });
+            return res.status(404).json({ error: 'Лайк не найден' });
         }
 
-        await like.remove();
 
-        const index = post.likes.indexOf(like._id);
-        const userPostIndex = user.likePost.indexOf(like._id)
+        const index = post.likes.findIndex(item => item.likeId == like._id);
+        const userPostIndex = user.likePost.findIndex(item => item.likeId == like._id);
         post.likes.splice(index, 1);
         user.likePost.splice(userPostIndex, 1)
+        await likeSchema.findByIdAndDelete({ _id: like._id })
+            .then(doc => {
+                if (!doc) {
+                    res.status(400).json({ error: "Произошла ошибка при удалении" })
+                }
+            })
         await post.save();
         await user.save()
 
+
         res.json({ message: 'Лайк удален' });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Ошибка при удалении лайка' });
     }
 };
+
+
