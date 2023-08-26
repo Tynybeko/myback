@@ -93,7 +93,7 @@ export const removeImageForUser = async (req, res) => {
         const userImg = await user.images.find(item => item.userId == user._id)
         const image = await imageSchema.findById(userImg._id)
         if (!image) {
-            res.status(400).json({ message: 'Не удалось удалить изоброжение!' })
+            res.status(400).json({ error: 'Не удалось удалить изоброжение!' })
             return
         }
         await image.remove()
@@ -102,7 +102,7 @@ export const removeImageForUser = async (req, res) => {
         fs.unlink(filePath, (err) => {
             if (err) {
                 console.error('Error deleting file:', err);
-                res.status(500).json({ message: 'Ошибка при удалении изоброжении!' });
+                res.status(500).json({ error: 'Ошибка при удалении изоброжении!' });
                 return;
             }
         });
@@ -110,7 +110,7 @@ export const removeImageForUser = async (req, res) => {
         res.status(201).json({ message: "Изоброжение успешно загружены!", data: arr })
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: "Возникло ошибка при удалении изоброжении!", data: err })
+        res.status(500).json({ error: "Возникло ошибка при удалении изоброжении!", data: err })
     }
 }
 
@@ -128,7 +128,7 @@ export const uploadImagesForPost = async (req, res) => {
             await image.save().then((doc) => {
                 post.images.push({ url: `/uploads/${file.filename}`, imgId: doc._id })
             }).catch(err => {
-                res.status(400).json({ message: 'Ошибка при загрузке изоброжение!' })
+                res.status(400).json({ error: 'Ошибка при загрузке изоброжение!' })
                 return
             })
         }
@@ -136,7 +136,7 @@ export const uploadImagesForPost = async (req, res) => {
         res.status(201).json({ message: "Изоброжение успешно загружены!", data: arr })
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: "Возникло ошибка при загрузке!" })
+        res.status(500).json({ error: "Возникло ошибка при загрузке!" })
     }
 }
 
@@ -151,7 +151,7 @@ export const removeImageForPost = async (req, res) => {
                     fs.unlink(filePath, (err) => {
                         if (err) {
                             console.error('Error deleting file:', err);
-                            res.status(500).json({ message: 'Ошибка при удалении изоброжении!' });
+                            res.status(500).json({ error: 'Ошибка при удалении изоброжении!' });
                             return;
                         }
                     });
@@ -165,6 +165,6 @@ export const removeImageForPost = async (req, res) => {
             })
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: "Возникло ошибка при удалении изоброжении!", data: err })
+        res.status(500).json({ error: "Возникло ошибка при удалении изоброжении!", data: err })
     }
 }

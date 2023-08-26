@@ -14,14 +14,14 @@ export const CatGetOne = async (req, res) => {
         ).then((doc) => {
             if (!doc) {
                 return res.status(404).json({
-                    message: 'Не найдено'
+                    error: 'Не найдено'
                 })
             }
             res.json(doc)
         },)
     } catch (err) {
         res.status(500).json({
-            message: 'Не получилось получить доступ!'
+            error: 'Не получилось получить доступ!'
         });
     }
 }
@@ -32,7 +32,7 @@ export const CatGetAll = async (req, res) => {
         res.json(category)
     } catch (err) {
         res.status(500).json({
-            message: 'Не получилось получить доступ!'
+            error: 'Не получилось получить доступ!'
         });
     }
 }
@@ -50,7 +50,7 @@ export const createCategory = async (req, res) => {
         res.status(200).json(category)
     } catch (err) {
         res.status(500).json({
-            message: 'Не удалось добавить категорию'
+            error: 'Не удалось добавить категорию'
         })
     }
 }
@@ -66,7 +66,7 @@ export const catRemove = async (req, res) => {
         ).then((doc) => {
             if (!doc) {
                 return res.status(404).json({
-                    message: 'Не найдено!'
+                    error: 'Не найдено!'
                 })
             }
             res.json({
@@ -75,7 +75,7 @@ export const catRemove = async (req, res) => {
         },)
     } catch (err) {
         res.status(500).json({
-            message: 'Не получилось получить доступ!'
+            error: 'Не получилось получить доступ!'
         });
     }
 }
@@ -94,7 +94,7 @@ export const catUpdate = async (req, res) => {
         ).then((doc) => {
             if (!doc) {
                 return res.status(404).json({
-                    message: 'Не найдено!'
+                    error: 'Не найдено!'
                 })
             }
             res.json({
@@ -103,7 +103,7 @@ export const catUpdate = async (req, res) => {
         },)
     } catch (err) {
         res.status(500).json({
-            message: 'Не получилось получить доступ!'
+            error: 'Не получилось получить доступ!'
         });
     }
 }
@@ -114,17 +114,14 @@ export const createPost = async (req, res) => {
 
         const catId = await CatSchema.findById(req.body.categoryId)
         if (!catId) {
-            return res.status(400).json({ message: 'Неправильно указан катаегория!' })
+            return res.status(400).json({ error: 'Неправильно указан катаегория!' })
         }
-<<<<<<< HEAD
-=======
         const images = req.body.images.map(file => {
             return {
                 data: file.buffer,
                 contentType: file.mimetype
             };
         });
->>>>>>> ccfd3ac0556dbcd18fdce789648c2fb710c71d99
         const doc = new PostSchema({
             title: req.body.title,
             desc: req.body.desc,
@@ -139,7 +136,7 @@ export const createPost = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            message: 'Не удалось опубликовать пост!'
+            error: 'Не удалось опубликовать пост!'
         })
     }
 }
@@ -157,7 +154,7 @@ export const getAll = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            message: 'Не получилось получить доступ!'
+            error: 'Не получилось получить доступ!'
         });
     }
 }
@@ -179,14 +176,14 @@ export const getOne = async (req, res) => {
         ).then((doc) => {
             if (!doc) {
                 return res.status(404).json({
-                    message: 'Не найдено'
+                    error: 'Не найдено'
                 })
             }
             res.json(doc)
         },)
     } catch (err) {
         res.status(500).json({
-            message: 'Не получилось получить доступ!'
+            error: 'Не получилось получить доступ!'
         });
     }
 }
@@ -208,7 +205,7 @@ export const remove = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            message: 'Не получилось получить доступ!'
+            error: 'Не получилось получить доступ!'
         });
     }
 }
@@ -241,7 +238,7 @@ export const update = async (req, res) => {
         ).then((doc) => {
             if (!doc) {
                 return res.status(404).json({
-                    message: 'Не найдено!'
+                    error: 'Не найдено!'
                 })
             }
             res.json({
@@ -251,7 +248,7 @@ export const update = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            message: 'Не получилось получить доступ!'
+            error: 'Не получилось получить доступ!'
         });
     }
 }

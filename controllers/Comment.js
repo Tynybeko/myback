@@ -1,14 +1,21 @@
 import PostSchema from '../models/Post.js';
 import commentSchema from '../models/Comment.js';
+import UserSchema from '../models/User.js';
 
 
 export const addComment = async (req, res) => {
     try {
         const post = await PostSchema.findById(req.params.postId);
         const newComment = new commentSchema({ postId: post._id, text: req.body.text, userId: req.userId });
+        const user = await UserSchema.findById(req.userId)
         await newComment.save();
 
-        post.comments.push(newComment._id);
+        post.comments.push({
+            userId: req.userId,
+            commentId: newComment._id,
+            text: newComment.text,
+            userName: user.name
+        });
         await post.save();
 
         res.status(201).json({ message: 'Комментарий добавлен' });
@@ -26,7 +33,7 @@ export const removeComment = async (req, res) => {
                     if (!post) {
                         return res.status(404).json({ message: 'Пост не найден' });
                     }
-                    const index = post.comments.indexOf(doc._id);
+                    const index = post.comments.findIndex(item => item.commentId == doc._id);
                     post.comments.splice(index, 1);
                     await post.save();
                     res.json({ message: 'Комментарий удален' });
@@ -34,11 +41,9 @@ export const removeComment = async (req, res) => {
                     res.status(400).json({ error: "Произошла ошибка" })
                 }
             })
-
-
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Ошибка при удалении комментария' });
     }
 };
+
