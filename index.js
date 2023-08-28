@@ -72,7 +72,8 @@ app.delete('/remove/post/image/:postId', checkAuth, Uploads.removeImageForPost)
 
 app.post('/auth/login', Validations.login, handleValidationErrors, Users.login)
 app.post('/auth/register', Validations.register, handleValidationErrors, Users.register)
-app.patch('/auth/update/:id', checkAuth, Users.userUpdate)
+app.patch('/auth/update/', checkAuth, Validations.updateUser, handleValidationErrors, Users.userUpdate)
+app.patch('/auth/changepass/', checkAuth, Validations.changePassword, handleValidationErrors, Users.refreshPass)
 app.get('/auth/me', checkAuth, Users.getMe)
 
 

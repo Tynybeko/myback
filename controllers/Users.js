@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import UserModel from '../models/User.js';
+import User from "../models/User.js";
 
 
 export const register = async (req, res) => {
@@ -19,7 +20,7 @@ export const register = async (req, res) => {
             password: hash,
         })
 
-        const user = await doc.save();
+        const user = await doc.save()
         const token = jwt.sign({
             _id: user._id,
         }, 'secret123', {
@@ -39,7 +40,7 @@ export const register = async (req, res) => {
 
 export const userUpdate = async (req, res) => {
     try {
-        const userId = req.params.id;
+        const userId = req.userId;
         UserModel.findOneAndReplace(
             {
                 _id: userId,
@@ -56,7 +57,10 @@ export const userUpdate = async (req, res) => {
             res.json({
                 message: 'Пользователь обнавлен!'
             })
-        },)
+        },).catch(err => {
+            console.log(err);
+            res.status(400).json({ error: 'Не удалось обновить пользователя', data: err })
+        })
     } catch (err) {
         res.status(500).json({
             error: 'Не получилось получить доступ!'
@@ -121,5 +125,35 @@ export const getMe = async (req, res) => {
         res.status(400).json({
             error: 'Нету доступа'
         })
+    }
+}
+
+
+export const refreshPass = async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.userId)
+        const isValidPass = await bcrypt.compare(req.body.password, user._doc.password);
+        if (!isValidPass) {
+            return res.status(400).json({ error: 'Неправильный пароль!' })
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(req.body.newpassword, salt)
+        await UserModel.findByIdAndUpdate(req.userId, {
+            password: hash
+        }).then(doc => {
+            if (doc) {
+                return res.status(200).json({ message: 'Пароль обнавлен' })
+            } else {
+                return res.status(400).json({ error: 'Произошла ошибка при обновлении' })
+            }
+
+        }).catch(err => {
+            return res.status(400).json({ error: 'Произошла ошибка при обновлении' })
+
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ error: 'Произошла ошибка!' })
     }
 }
