@@ -143,13 +143,15 @@ export const createPost = async (req, res) => {
 
 
 export const getAll = async (req, res) => {
+    const { page, limit, ...somequery } = req.query;
+    const pageNumber = parseInt(page) || '';
+    const itemsPerPage = parseInt(limit) || '';
     try {
-        let queryObj = {}
-        let query =req._parsedUrl.query?.split(/[=&]/) ?? ""
-        for (let i = 0; i + 1 < query.length; i += 2) {
-            queryObj[query[i]] = query[i + 1]
-        }
-        const posts = await PostSchema.find(queryObj)
+        const posts = await PostSchema.find(somequery)
+            .skip((pageNumber - 1) * itemsPerPage)
+            .limit(itemsPerPage)
+            .exec();
+
         res.json(posts)
     } catch (err) {
         console.log(err)
