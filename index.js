@@ -39,8 +39,8 @@ app.use((req, res, next) => {
 
 
 app.get('/posts', Posts.getAll)
-app.get('/posts/:id', checkAuth, Posts.getOne)
-app.post('/posts/create', checkAuth, Posts.createPost)
+app.get('/posts/:id', Posts.getOne)
+app.post('/posts/create', checkAuth,  Posts.createPost)
 app.delete('/posts/remove/:id', checkAuth, Posts.remove)
 app.patch('/posts/update/:id', checkAuth, Posts.update)
 
