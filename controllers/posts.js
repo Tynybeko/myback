@@ -143,11 +143,12 @@ export const createPost = async (req, res) => {
 
 
 export const getAll = async (req, res) => {
-    const { page, limit, ...somequery } = req.query;
+    const { page, sort, limit, ...somequery } = req.query;
     const pageNumber = parseInt(page) || '';
     const itemsPerPage = parseInt(limit) || '';
     try {
         const posts = await PostSchema.find(somequery)
+            .sort({ "viewCount": sort ?? '' })
             .skip((pageNumber - 1) * itemsPerPage)
             .limit(itemsPerPage)
             .exec();
