@@ -97,13 +97,14 @@ app.post('/comment/:postId', checkAuth, Comment.addComment);
 app.delete('/comment/:commentId', checkAuth, Comment.removeComment);
 app.get('/cryptobase', async (req, res) => {
     try {
-        const { data: { data } } = await axios.get('https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', {
+        const { data } = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=5000', {
             headers: {
-                "X-CMC_PRO_API_KEY": "0650ecb7-adc0-45ef-8713-a175d0a061e4"
+                "X-CMC_PRO_API_KEY": "0650ecb7-adc0-45ef-8713-a175d0a061e4",
             }
         })
         if (data) {
-            res.status(200).json(data)
+            res.status(200).json(data.data)
+            return
         }
         res.status(400).json({
             error: 'Ошибка!'
