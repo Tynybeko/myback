@@ -5,7 +5,7 @@ import cors from 'cors'
 import * as Validations from './utils/validations.js'
 import { checkAuth, handleValidationErrors } from './utils/utils.js'
 import { Users, Posts, Likes, Comment, Uploads } from "./controllers/controllers.js";
-
+import axios from 'axios'
 
 
 const PORT = 5555;
@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 
 app.get('/posts', Posts.getAll)
 app.get('/posts/:id', Posts.getOne)
-app.post('/posts/create', checkAuth,  Posts.createPost)
+app.post('/posts/create', checkAuth, Posts.createPost)
 app.delete('/posts/remove/:id', checkAuth, Posts.remove)
 app.patch('/posts/update/:id', checkAuth, Posts.update)
 
@@ -95,6 +95,24 @@ app.delete('/like/:postId', checkAuth, Likes.removeLike)
 // Comment API
 app.post('/comment/:postId', checkAuth, Comment.addComment);
 app.delete('/comment/:commentId', checkAuth, Comment.removeComment);
+app.get('/cryptobase', async (req, res) => {
+    try {
+        const { data: { data } } = await axios.get('https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', {
+            headers: {
+                "X-CMC_PRO_API_KEY": "0650ecb7-adc0-45ef-8713-a175d0a061e4"
+            }
+        })
+        if (data) {
+            res.status(200).json(data)
+        }
+        res.status(400).json({
+            error: 'Ошибка!'
+        })
 
+    } catch (e) {
+        res.status(500).json({ error: 'Ошибка при получении данных!' })
+    }
+
+})
 
 
