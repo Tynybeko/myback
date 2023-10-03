@@ -6,9 +6,10 @@ import * as Validations from './utils/validations.js'
 import { checkAuth, handleValidationErrors } from './utils/utils.js'
 import { Users, Posts, Likes, Comment, Uploads } from "./controllers/controllers.js";
 import axios from 'axios'
+import currencyShcema from "./models/Currency.js";
 
 
-const PORT = 5555;
+const PORT = 4440;
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -117,4 +118,33 @@ app.get('/cryptobase', async (req, res) => {
 
 })
 
+
+
+
+
+app.get('/currencyAPI', async (req, res) => {
+    try {
+        const data = await currencyShcema.findById('651ba3eee0e6832d90d51885')
+
+
+        if (data) {
+            if (+new Date(data?.updatedAt) + 135920 <= +new Date()) {
+                const res = await axios.get('https://data.fx.kg/api/v1/central', {
+                    headers: {
+                        "Authorization": "Bearer U8FciHxhkitCtndOEZCQOeKvyaQ4tlrelDWyerrAd184dc5b"
+                    },
+                })
+                data.data = res.data
+                data.updatedAt = new Date()
+                let newCurrency = await data.save()
+            }
+            res.status(200).json(data)
+        } else {
+            res.status(400).json({ error: 'Произошла ошибка при получении котировки!' })
+        }
+    } catch (e) {
+        res.status(500).json({ error: 'Произошла ошибка!' })
+    }
+
+})
 
